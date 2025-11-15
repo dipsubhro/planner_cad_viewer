@@ -97,8 +97,3 @@ if __name__ == '__main__':
         "Crane Utilization": 42.0
     }
     create_lifting_plan_drawing("lifting_plan_example.dxf", example_params, example_results)
-
-
-
-
-    

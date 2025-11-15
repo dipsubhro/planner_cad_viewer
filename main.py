@@ -1,5 +1,4 @@
-
-from lifting_plan_automation import excel_io, calculations, drawing
+import excel_io, calculations, drawing
 import openpyxl
 import os
 
@@ -87,4 +86,3 @@ def main(filepath="lifting_plan.xlsx", output_dir=".", load_weight=None, sling_a
 
 if __name__ == "__main__":
     main()
-
