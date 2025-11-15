@@ -1,9 +1,8 @@
 import streamlit as st
 import pandas as pd
 import os
-import main
-import excel_io
 import tempfile
+from lifting_plan_automation import main, excel_io
 
 def streamlit_app():
     st.title("Lifting Plan Automation")

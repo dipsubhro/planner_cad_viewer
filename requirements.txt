@@ -1,7 +1,8 @@
 et_xmlfile==2.0.0
 ezdxf==1.4.3
 fonttools==4.60.1
-numpy==2.3.4
+# Use a NumPy 1.x release compatible with Streamlit 1.33.0
+numpy==1.26.4
 openpyxl==3.1.5
 pyparsing==3.2.5
 typing_extensions==4.15.0

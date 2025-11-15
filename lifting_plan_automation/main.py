@@ -1,5 +1,5 @@
 
-import excel_io, calculations, drawing
+from lifting_plan_automation import excel_io, calculations, drawing
 import openpyxl
 import os
 
