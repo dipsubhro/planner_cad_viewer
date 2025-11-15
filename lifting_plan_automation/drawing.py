@@ -6,8 +6,8 @@ def create_lifting_plan_drawing(filename, params, results):
     doc = ezdxf.new()
     msp = doc.modelspace()
 
-    load_length = params.get("Load Length", 6)
-    load_width = params.get("Load Width", 2.5)
+    load_length = params.get("Load Length", 10) or 10
+    load_width = params.get("Load Width", 2) or 2
     load_height = params.get("Load Height", 2)
     num_slings = params.get("Number of Slings", 4)
     sling_length = params.get("Sling Length", 5)
@@ -97,3 +97,8 @@ if __name__ == '__main__':
         "Crane Utilization": 42.0
     }
     create_lifting_plan_drawing("lifting_plan_example.dxf", example_params, example_results)
+
+
+
+
+    

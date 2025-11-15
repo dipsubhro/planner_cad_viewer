@@ -29,14 +29,19 @@ This project is a Python-based automation tool for generating lifting plans. It 
 
 2.  **Run the Streamlit App:**
     ```bash
-    streamlit run lifting_plan_automation/streamlit_app.py
+    streamlit run lifting_plan_automation/gui.py
     ```
 
 3.  **Open the Web App:**
     - A new tab will open in your web browser with the Streamlit application.
 
-4.  **Upload Your Excel File:**
-    - Create an Excel file with your lifting parameters. You can use the following structure as a template:
+4.  **Provide Lifting Parameters:**
+    You have two options to provide the lifting parameters:
+    - **Option 1: Enter Parameters in the GUI**
+        - Use the input fields to enter the Load Weight, Sling Angle, Number of Slings, Crane Capacity, and Sling WLL.
+        - Click the "Generate Lifting Plan from Inputs" button.
+    - **Option 2: Upload Your Excel File**
+        - Create an Excel file with your lifting parameters. You can use the following structure as a template:
 
 | Parameter                 | Value        | Unit    |
 | :--------------------------|:-------------|:--------|
@@ -65,12 +70,10 @@ This project is a Python-based automation tool for generating lifting plans. It 
 | Sling Attachment Point X4 | 2            | m       |
 | Sling Attachment Point Y4 | -1           | m       |
 
-    - Drag and drop your Excel file into the file uploader on the web app.
+        - Drag and drop your Excel file into the file uploader on the web app.
+        - Click the "Generate Lifting Plan" button.
 
-5.  **Generate the Lifting Plan:**
-    - Click the "Generate Lifting Plan" button to perform the calculations and create the DXF drawing.
-
-6.  **Download the DXF File:**
+5.  **Download the DXF File:**
     - A "Download DXF File" button will appear, allowing you to save the generated `lifting_plan.dxf` file.
 
 ## Project Structure
@@ -80,5 +83,5 @@ This project is a Python-based automation tool for generating lifting plans. It 
     - `excel_io.py`: Module for reading data from the Excel file.
     - `calculations.py`: Module for performing engineering calculations.
     - `drawing.py`: Module for generating the DXF drawing.
-    - `streamlit_app.py`: The Streamlit web application.
+    - `gui.py`: The Streamlit web application.
 - `requirements.txt`: A file with the project's dependencies.

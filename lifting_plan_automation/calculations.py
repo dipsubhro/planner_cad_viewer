@@ -1,9 +1,14 @@
 import math
 
 def calculate_center_of_gravity(load_length, load_width):
+    if load_length == 0 or load_width == 0:
+        return (0, 0)
     return (load_length / 2, load_width / 2)
 
 def calculate_sling_angle(sling_length, load_width, num_slings):
+    if num_slings == 0 or sling_length == 0:
+        return 0
+        
     if num_slings == 2:
         horizontal_distance = load_width / 2
     elif num_slings == 4:
@@ -18,19 +23,26 @@ def calculate_sling_angle(sling_length, load_width, num_slings):
         return 0
 
 def calculate_sling_tension(load_weight, num_slings, sling_angle):
-    if sling_angle > 0:
-        angle_rad = math.radians(sling_angle)
-        tension = (load_weight / num_slings) / math.sin(angle_rad)
-        return tension
-    else:
+    if num_slings == 0 or sling_angle <= 0:
         return float('inf')
+        
+    angle_rad = math.radians(sling_angle)
+    if math.sin(angle_rad) == 0:
+        return float('inf')
+        
+    tension = (load_weight / num_slings) / math.sin(angle_rad)
+    return tension
 
 def check_safety_factors(sling_tension, sling_swl, shackle_swl):
-    sling_safety_factor = sling_swl / sling_tension if sling_tension > 0 else 0
-    shackle_safety_factor = shackle_swl / sling_tension if sling_tension > 0 else 0
+    if sling_tension <= 0:
+        return (float('inf'), float('inf'))
+    sling_safety_factor = sling_swl / sling_tension
+    shackle_safety_factor = shackle_swl / sling_tension
     return (sling_safety_factor, shackle_safety_factor)
 
 def calculate_crane_utilization(load_weight, hook_weight, crane_capacity):
+    if crane_capacity == 0:
+        return float('inf')
     total_load = load_weight + hook_weight
     utilization = (total_load / crane_capacity) * 100
     return utilization

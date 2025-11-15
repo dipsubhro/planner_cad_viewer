@@ -3,10 +3,20 @@ import excel_io, calculations, drawing
 import openpyxl
 import os
 
-def main(filepath="lifting_plan.xlsx", output_dir="."):
+def main(filepath="lifting_plan.xlsx", output_dir=".", load_weight=None, sling_angle=None, num_slings=None, crane_capacity=None, sling_swl=None):
     params = excel_io.read_lifting_parameters(filepath)
-    if not params:
-        return
+    if params is None:
+        params = {}
+
+    # Override params with values from arguments if they are provided
+    if load_weight is not None:
+        params["Load Weight"] = load_weight
+    if num_slings is not None:
+        params["Number of Slings"] = num_slings
+    if sling_swl is not None:
+        params["Sling SWL"] = sling_swl
+    if crane_capacity is not None:
+        params["Crane Capacity"] = crane_capacity
 
     load_weight = params.get("Load Weight", 0)
     load_length = params.get("Load Length", 0)
@@ -19,7 +29,9 @@ def main(filepath="lifting_plan.xlsx", output_dir="."):
     crane_capacity = params.get("Crane Capacity", 0)
 
     cog_x, cog_y = calculations.calculate_center_of_gravity(load_length, load_width)
-    sling_angle = calculations.calculate_sling_angle(sling_length, load_width, num_slings)
+    if sling_angle is None:
+        sling_angle = calculations.calculate_sling_angle(sling_length, load_width, num_slings)
+    
     sling_tension = calculations.calculate_sling_tension(load_weight, num_slings, sling_angle)
     sling_sf, shackle_sf = calculations.check_safety_factors(sling_tension, sling_swl, shackle_swl)
     crane_utilization = calculations.calculate_crane_utilization(load_weight, hook_weight, crane_capacity)
@@ -35,12 +47,29 @@ def main(filepath="lifting_plan.xlsx", output_dir="."):
     }
 
     try:
-        workbook = openpyxl.load_workbook(filepath)
-        sheet = workbook["LiftingPlan"]
-        for row in sheet.iter_rows(min_row=2):
-            param_name = row[0].value
-            if param_name in results:
-                row[1].value = results[param_name]
+        # It's possible the file doesn't exist if we're generating from inputs only
+        if os.path.exists(filepath):
+            workbook = openpyxl.load_workbook(filepath)
+        else:
+            workbook = openpyxl.Workbook()
+
+        sheet_name = "LiftingPlan"
+        if sheet_name in workbook.sheetnames:
+            sheet = workbook[sheet_name]
+        else:
+            sheet = workbook.active
+            sheet.title = sheet_name
+
+
+        # Create a new dictionary for results to be written to excel, including original params
+        excel_output_data = params.copy()
+        excel_output_data.update(results)
+
+        # Clear the sheet and write the new data
+        sheet.delete_rows(1, sheet.max_row)
+        sheet.append(["Parameter", "Value"])
+        for key, value in excel_output_data.items():
+            sheet.append([key, value])
         
         output_filename_base, _ = os.path.splitext(os.path.basename(filepath))
         output_excel_path = os.path.join(output_dir, f"{output_filename_base}_results.xlsx")
@@ -50,6 +79,8 @@ def main(filepath="lifting_plan.xlsx", output_dir="."):
         print(f"Error updating Excel file: {e}")
 
     output_dxf_path = os.path.join(output_dir, f"{output_filename_base}.dxf")
+    # Update params with results for drawing
+    params.update(results)
     drawing.create_lifting_plan_drawing(output_dxf_path, params, results)
 
     return output_excel_path, output_dxf_path
